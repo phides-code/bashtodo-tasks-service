@@ -29,7 +29,6 @@ public class EntityUtils {
 
         String content = jsonNode.get("content").asText();
 
-        // return objectMapper.treeToValue(jsonNode, BaseEntity.class);
         return new BaseEntity(content);
     }
 
@@ -37,8 +36,8 @@ public class EntityUtils {
         String itemId = item.get("id").s();
         String itemContent = item.get("content").s();
         String itemStatus = item.get("status").s();
-        int itemCreatedOn = Integer.parseInt(item.get("createdOn").n());
-        int itemCompletedOn = Integer.parseInt(item.get("completedOn").n());
+        long itemCreatedOn = Long.parseLong(item.get("createdOn").n());
+        long itemCompletedOn = Long.parseLong(item.get("completedOn").n());
 
         return new Entity(itemId, new BaseEntity(itemContent, itemStatus, itemCreatedOn, itemCompletedOn));
     }
@@ -96,7 +95,7 @@ public class EntityUtils {
                 .n(entity.getCreatedOn() + "")
                 .build());
 
-        itemValues.put("compeltedOn", AttributeValue.builder()
+        itemValues.put("completedOn", AttributeValue.builder()
                 .n(entity.getCompletedOn() + "")
                 .build());
 

@@ -21,7 +21,7 @@ public class BaseEntity {
         this.completedOn = newBaseEntity.getCompletedOn();
     }
 
-    public BaseEntity(String content, String status, int createdOn, int completedOn) {
+    public BaseEntity(String content, String status, long createdOn, long completedOn) {
         this.content = content;
         this.status = status;
         this.createdOn = createdOn;
