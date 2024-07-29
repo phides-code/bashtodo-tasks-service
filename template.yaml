@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  BashtodoTasksService:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: "bashtodo-tasks-service"
+      StageName: Prod
+      Cors:
+        AllowMethods: "'OPTIONS, POST, GET, PUT, DELETE'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'http://localhost:3000'" # replace with frontend app URL
+
+  BashtodoTasksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: com.github.phidescode.BashtodoDynamoDBService.App::handleRequest
+      Runtime: java17
+      Timeout: 60
+      MemorySize: 512
+      CodeUri: .
+      Policies:
+        - AWSLambdaExecute
+        - SecretsManagerReadWrite
+        - DynamoDBCrudPolicy:
+            TableName: !Ref BashtodoTasksTable
+      Events:
+        TasksOptions:
+          Type: Api
+          Properties:
+            Path: /tasks
+            Method: OPTIONS
+            RestApiId: !Ref BashtodoTasksService
+        GetTask:
+          Type: Api
+          Properties:
+            Path: /tasks/{id}
+            Method: GET
+            RestApiId: !Ref BashtodoTasksService
+        GetTasks:
+          Type: Api
+          Properties:
+            Path: /tasks
+            Method: GET
+            RestApiId: !Ref BashtodoTasksService
+        PutTask:
+          Type: Api
+          Properties:
+            Path: /tasks
+            Method: POST
+            RestApiId: !Ref BashtodoTasksService
+        DeleteTask:
+          Type: Api
+          Properties:
+            Path: /tasks/{id}
+            Method: DELETE
+            RestApiId: !Ref BashtodoTasksService
+        UpdateTask:
+          Type: Api
+          Properties:
+            Path: /tasks/{id}
+            Method: PUT
+            RestApiId: !Ref BashtodoTasksService
+    Metadata:
+      BuildMethod: makefile
+
+  BashtodoTasksTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: BashtodoTasks
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
