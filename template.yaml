@@ -44,6 +44,12 @@ Resources:
             Path: /tasks
             Method: GET
             RestApiId: !Ref BashtodoTasksService
+        GetCompletedTasks:
+          Type: Api
+          Properties:
+            Path: /tasks/complete
+            Method: GET
+            RestApiId: !Ref BashtodoTasksService
         PutTask:
           Type: Api
           Properties:
@@ -60,6 +66,12 @@ Resources:
           Type: Api
           Properties:
             Path: /tasks/{id}
+            Method: PUT
+            RestApiId: !Ref BashtodoTasksService
+        CompleteTask:
+          Type: Api
+          Properties:
+            Path: /tasks/complete/{id}
             Method: PUT
             RestApiId: !Ref BashtodoTasksService
     Metadata:

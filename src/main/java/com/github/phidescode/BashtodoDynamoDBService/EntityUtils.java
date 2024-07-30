@@ -16,7 +16,7 @@ public class EntityUtils {
 
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static BaseEntity validateRequestBody(String requestBody) throws JsonMappingException, JsonProcessingException {
+    public static BaseEntity validateCreateRequest(String requestBody) throws JsonMappingException, JsonProcessingException {
         if (requestBody == null || requestBody.isEmpty()) {
             throw new ClassCastException("Invalid data format");
         }
@@ -27,9 +27,30 @@ public class EntityUtils {
             throw new ClassCastException("Invalid data format");
         }
 
-        String content = jsonNode.get("content").asText();
+        return new BaseEntity(jsonNode.get("content").asText());
+    }
 
-        return new BaseEntity(content);
+    public static BaseEntity validateUpdateRequest(String requestBody) throws JsonMappingException, JsonProcessingException {
+        if (requestBody == null || requestBody.isEmpty()) {
+            throw new ClassCastException("Invalid data format");
+        }
+
+        JsonNode jsonNode = objectMapper.readTree(requestBody);
+
+        if (!jsonNode.has("content") || !jsonNode.get("content").isTextual()
+                || !jsonNode.has("status") || !jsonNode.get("status").isTextual()
+                || !jsonNode.has("createdOn") || !jsonNode.get("createdOn").isNumber()
+                || !jsonNode.has("completedOn") || !jsonNode.get("completedOn").isNumber()) {
+            throw new ClassCastException("Invalid data format");
+        }
+
+        BaseEntity newEntity = objectMapper.treeToValue(jsonNode, BaseEntity.class);
+
+        if (newEntity.getCreatedOn() < 0 || newEntity.getCompletedOn() < 0) {
+            throw new ClassCastException("Invalid data format");
+        }
+
+        return newEntity;
     }
 
     public static Entity getEntityFromDBItem(Map<String, AttributeValue> item) {

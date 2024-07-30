@@ -112,7 +112,8 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
     private APIGatewayProxyResponseEvent processPost(APIGatewayProxyRequestEvent request) {
         try {
             String requestBody = request.getBody();
-            BaseEntity newEntity = EntityUtils.validateRequestBody(requestBody);
+
+            BaseEntity newEntity = EntityUtils.validateCreateRequest(requestBody);
 
             Entity entity = dbHandler.putEntity(newEntity);
 
@@ -136,7 +137,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
             String id = pathSegments[2];
 
             String requestBody = request.getBody();
-            BaseEntity updatedEntity = EntityUtils.validateRequestBody(requestBody);
+            BaseEntity updatedEntity = EntityUtils.validateUpdateRequest(requestBody);
 
             dbHandler.updateEntity(id, updatedEntity);
 
