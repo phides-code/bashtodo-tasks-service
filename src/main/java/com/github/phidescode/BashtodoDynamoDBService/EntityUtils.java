@@ -45,7 +45,8 @@ public class EntityUtils {
 
         BaseEntity newEntity = objectMapper.treeToValue(jsonNode, BaseEntity.class);
 
-        if (newEntity.getCreatedOn() < 0 || newEntity.getCompletedOn() < 0) {
+        // if (newEntity.getCreatedOn() < 0 || newEntity.getCompletedOn() < 0) {
+        if (newEntity.getCompletedOn() < 0) {
             throw new ClassCastException("Invalid data format");
         }
 
@@ -59,7 +60,7 @@ public class EntityUtils {
         long itemCreatedOn = Long.parseLong(item.get("createdOn").n());
         long itemCompletedOn = Long.parseLong(item.get("completedOn").n());
 
-        return new Entity(itemId, new BaseEntity(itemContent, itemStatus, itemCreatedOn, itemCompletedOn));
+        return new Entity(itemId, itemCreatedOn, new BaseEntity(itemContent, itemStatus, itemCompletedOn));
     }
 
     public static HashMap<String, AttributeValueUpdate> getUpdatedValues(BaseEntity entity) {

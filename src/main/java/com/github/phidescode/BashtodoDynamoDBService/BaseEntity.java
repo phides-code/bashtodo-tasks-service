@@ -1,12 +1,10 @@
 package com.github.phidescode.BashtodoDynamoDBService;
 
-import java.time.Instant;
-
 public class BaseEntity {
 
     protected String content;
     protected String status;
-    protected long createdOn;
+    // protected long createdOn;
     protected long completedOn;
 
     // Jackson requires a default (no-argument) constructor to create an instance of BaseEntity during deserialization
@@ -17,21 +15,22 @@ public class BaseEntity {
     public BaseEntity(BaseEntity newBaseEntity) {
         this.content = newBaseEntity.getContent();
         this.status = newBaseEntity.getStatus();
-        this.createdOn = newBaseEntity.getCreatedOn();
+        // this.createdOn = newBaseEntity.getCreatedOn();
         this.completedOn = newBaseEntity.getCompletedOn();
     }
 
-    public BaseEntity(String content, String status, long createdOn, long completedOn) {
+    public BaseEntity(String content, String status, long completedOn) {
+        // public BaseEntity(String content, String status, long createdOn, long completedOn) {
         this.content = content;
         this.status = status;
-        this.createdOn = createdOn;
+        // this.createdOn = createdOn;
         this.completedOn = completedOn;
     }
 
     public BaseEntity(String content) {
         this.content = content;
         this.status = "PENDING";
-        this.createdOn = Instant.now().getEpochSecond();
+        // this.createdOn = Instant.now().getEpochSecond();
         this.completedOn = 0;
     }
 
@@ -51,14 +50,12 @@ public class BaseEntity {
         this.status = status;
     }
 
-    public long getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(long createdOn) {
-        this.createdOn = createdOn;
-    }
-
+    // public long getCreatedOn() {
+    //     return createdOn;
+    // }
+    // public void setCreatedOn(long createdOn) {
+    //     this.createdOn = createdOn;
+    // }
     public long getCompletedOn() {
         return completedOn;
     }
