@@ -11,7 +11,7 @@ public class Entity extends BaseEntity {
     public Entity(BaseEntity newEntity) {
         super(newEntity);
         this.id = UUID.randomUUID().toString();
-        this.completedOn = Instant.now().getEpochSecond();
+        this.createdOn = Instant.now().getEpochSecond();
     }
 
     public Entity(String id, long createdOn, BaseEntity newEntity) {
