@@ -45,7 +45,6 @@ public class EntityUtils {
 
         BaseEntity newEntity = objectMapper.treeToValue(jsonNode, BaseEntity.class);
 
-        // if (newEntity.getCreatedOn() < 0 || newEntity.getCompletedOn() < 0) {
         if (newEntity.getCompletedOn() < 0) {
             throw new ClassCastException("Invalid data format");
         }
