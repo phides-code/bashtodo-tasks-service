@@ -39,7 +39,6 @@ public class EntityUtils {
 
         if (!jsonNode.has("content") || !jsonNode.get("content").isTextual()
                 || !jsonNode.has("status") || !jsonNode.get("status").isTextual()
-                || !jsonNode.has("createdOn") || !jsonNode.get("createdOn").isNumber()
                 || !jsonNode.has("completedOn") || !jsonNode.get("completedOn").isNumber()) {
             throw new ClassCastException("Invalid data format");
         }
@@ -76,13 +75,6 @@ public class EntityUtils {
         updatedValues.put("status", AttributeValueUpdate.builder()
                 .value(AttributeValue.builder()
                         .s(entity.getStatus())
-                        .build())
-                .action(AttributeAction.PUT)
-                .build());
-
-        updatedValues.put("createdOn", AttributeValueUpdate.builder()
-                .value(AttributeValue.builder()
-                        .n(entity.getCreatedOn() + "")
                         .build())
                 .action(AttributeAction.PUT)
                 .build());

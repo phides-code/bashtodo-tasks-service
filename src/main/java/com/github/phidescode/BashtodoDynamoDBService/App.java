@@ -141,7 +141,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
 
             dbHandler.updateEntity(id, updatedEntity);
 
-            ResponseStructure responseContent = new ResponseStructure(new Entity(id, updatedEntity), null);
+            ResponseStructure responseContent = new ResponseStructure("OK", null);
 
             return createResponse(HttpStatus.OK, responseContent);
         } catch (ClassCastException | JsonProcessingException | NoSuchElementException e) {
