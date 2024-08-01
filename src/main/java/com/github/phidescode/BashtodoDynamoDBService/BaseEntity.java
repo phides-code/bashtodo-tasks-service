@@ -1,9 +1,11 @@
 package com.github.phidescode.BashtodoDynamoDBService;
 
+import java.time.Instant;
+
 public class BaseEntity {
 
     protected String content;
-    protected String status;
+    protected String taskStatus;
     protected long completedOn;
 
     // Jackson requires a default (no-argument) constructor to create an instance of BaseEntity during deserialization
@@ -13,19 +15,19 @@ public class BaseEntity {
     // this constructor exists so that we can call super(newEntity); in the Entity class 
     public BaseEntity(BaseEntity newBaseEntity) {
         this.content = newBaseEntity.getContent();
-        this.status = newBaseEntity.getStatus();
-        this.completedOn = newBaseEntity.getCompletedOn();
+        this.taskStatus = newBaseEntity.getTaskStatus();
+        this.completedOn = this.taskStatus.equals("COMPLETED") ? Instant.now().getEpochSecond() : 0;
     }
 
-    public BaseEntity(String content, String status, long completedOn) {
+    public BaseEntity(String content, String taskStatus, long completedOn) {
         this.content = content;
-        this.status = status;
+        this.taskStatus = taskStatus;
         this.completedOn = completedOn;
     }
 
     public BaseEntity(String content) {
         this.content = content;
-        this.status = "PENDING";
+        this.taskStatus = "PENDING";
         this.completedOn = 0;
     }
 
@@ -37,12 +39,12 @@ public class BaseEntity {
         this.content = content;
     }
 
-    public String getStatus() {
-        return status;
+    public String getTaskStatus() {
+        return taskStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setTaskStatus(String taskStatus) {
+        this.taskStatus = taskStatus;
     }
 
     public long getCompletedOn() {

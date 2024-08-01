@@ -39,6 +39,18 @@ public class DynamoDBHandler {
     public List<Entity> listEntities() throws InterruptedException, ExecutionException {
         List<Entity> entities = new ArrayList<>();
 
+        //////////////////////////////////////////////
+        // String filterExpression = "taskStatus = :taskStatus";
+        // Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
+        // expressionAttributeValues.put(":taskStatus", AttributeValue.builder().s("PENDING").build());
+
+        // ScanRequest scanRequest = ScanRequest.builder()
+        //         .tableName(TABLE_NAME)
+        //         .filterExpression(filterExpression)
+        //         .expressionAttributeValues(expressionAttributeValues)
+        //         .build();
+
+        /////////////////////////////////////////////////
         ScanRequest scanRequest = ScanRequest.builder()
                 .tableName(TABLE_NAME)
                 .build();

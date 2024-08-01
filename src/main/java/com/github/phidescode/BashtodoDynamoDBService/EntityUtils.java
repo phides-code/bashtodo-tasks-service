@@ -38,16 +38,11 @@ public class EntityUtils {
         JsonNode jsonNode = objectMapper.readTree(requestBody);
 
         if (!jsonNode.has("content") || !jsonNode.get("content").isTextual()
-                || !jsonNode.has("status") || !jsonNode.get("status").isTextual()
-                || !jsonNode.has("completedOn") || !jsonNode.get("completedOn").isNumber()) {
+                || !jsonNode.has("taskStatus") || !jsonNode.get("taskStatus").isTextual()) {
             throw new ClassCastException("Invalid data format");
         }
 
         BaseEntity newEntity = objectMapper.treeToValue(jsonNode, BaseEntity.class);
-
-        if (newEntity.getCompletedOn() < 0) {
-            throw new ClassCastException("Invalid data format");
-        }
 
         return newEntity;
     }
@@ -55,11 +50,11 @@ public class EntityUtils {
     public static Entity getEntityFromDBItem(Map<String, AttributeValue> item) {
         String itemId = item.get("id").s();
         String itemContent = item.get("content").s();
-        String itemStatus = item.get("status").s();
+        String itemTaskStatus = item.get("taskStatus").s();
         long itemCreatedOn = Long.parseLong(item.get("createdOn").n());
         long itemCompletedOn = Long.parseLong(item.get("completedOn").n());
 
-        return new Entity(itemId, itemCreatedOn, new BaseEntity(itemContent, itemStatus, itemCompletedOn));
+        return new Entity(itemId, itemCreatedOn, new BaseEntity(itemContent, itemTaskStatus, itemCompletedOn));
     }
 
     public static HashMap<String, AttributeValueUpdate> getUpdatedValues(BaseEntity entity) {
@@ -72,16 +67,9 @@ public class EntityUtils {
                 .action(AttributeAction.PUT)
                 .build());
 
-        updatedValues.put("status", AttributeValueUpdate.builder()
+        updatedValues.put("taskStatus", AttributeValueUpdate.builder()
                 .value(AttributeValue.builder()
-                        .s(entity.getStatus())
-                        .build())
-                .action(AttributeAction.PUT)
-                .build());
-
-        updatedValues.put("completedOn", AttributeValueUpdate.builder()
-                .value(AttributeValue.builder()
-                        .n(entity.getCompletedOn() + "")
+                        .s(entity.getTaskStatus())
                         .build())
                 .action(AttributeAction.PUT)
                 .build());
@@ -100,8 +88,8 @@ public class EntityUtils {
                 .s(entity.getContent())
                 .build());
 
-        itemValues.put("status", AttributeValue.builder()
-                .s(entity.getStatus())
+        itemValues.put("taskStatus", AttributeValue.builder()
+                .s(entity.getTaskStatus())
                 .build());
 
         itemValues.put("createdOn", AttributeValue.builder()
