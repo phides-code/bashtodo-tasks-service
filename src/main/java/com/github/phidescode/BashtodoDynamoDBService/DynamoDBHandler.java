@@ -39,20 +39,33 @@ public class DynamoDBHandler {
     public List<Entity> listEntities() throws InterruptedException, ExecutionException {
         List<Entity> entities = new ArrayList<>();
 
-        //////////////////////////////////////////////
-        // String filterExpression = "taskStatus = :taskStatus";
-        // Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
-        // expressionAttributeValues.put(":taskStatus", AttributeValue.builder().s("PENDING").build());
-
-        // ScanRequest scanRequest = ScanRequest.builder()
-        //         .tableName(TABLE_NAME)
-        //         .filterExpression(filterExpression)
-        //         .expressionAttributeValues(expressionAttributeValues)
-        //         .build();
-
-        /////////////////////////////////////////////////
         ScanRequest scanRequest = ScanRequest.builder()
                 .tableName(TABLE_NAME)
+                .build();
+
+        CompletableFuture<ScanResponse> scanResponseFuture = dynamoDbClient.scan(scanRequest);
+        ScanResponse scanResponse = scanResponseFuture.get();
+
+        List<Map<String, AttributeValue>> items = scanResponse.items();
+
+        for (Map<String, AttributeValue> item : items) {
+            entities.add(EntityUtils.getEntityFromDBItem(item));
+        }
+
+        return entities;
+    }
+
+    public List<Entity> listCompletedEntities() throws InterruptedException, ExecutionException {
+        List<Entity> entities = new ArrayList<>();
+
+        String filterExpression = "taskStatus = :taskStatus";
+        Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
+        expressionAttributeValues.put(":taskStatus", AttributeValue.builder().s("COMPLETED").build());
+
+        ScanRequest scanRequest = ScanRequest.builder()
+                .tableName(TABLE_NAME)
+                .filterExpression(filterExpression)
+                .expressionAttributeValues(expressionAttributeValues)
                 .build();
 
         CompletableFuture<ScanResponse> scanResponseFuture = dynamoDbClient.scan(scanRequest);

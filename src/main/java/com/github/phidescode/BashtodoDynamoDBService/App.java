@@ -70,8 +70,13 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
         String[] pathSegments = request.getPath().split("/");
 
         if (pathSegments.length == 3) {
-            String id = pathSegments[2];
-            return processGetById(id);
+            String pathSegment = pathSegments[2];
+
+            if (pathSegment.equals("completed")) {
+                return processGetAllCompleted();
+            }
+
+            return processGetById(pathSegment);
         }
 
         return processGetAll();
@@ -88,6 +93,21 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
             return returnError(HttpStatus.BAD_REQUEST);
         } catch (InterruptedException | ExecutionException e) {
             Logger.logError("processGetById caught error: ", e);
+            return returnError(HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            dbHandler.closeDbClient();
+        }
+    }
+
+    private APIGatewayProxyResponseEvent processGetAllCompleted() {
+        try {
+            List<Entity> entities = dbHandler.listCompletedEntities();
+
+            ResponseStructure responseContent = new ResponseStructure(entities, null);
+
+            return createResponse(HttpStatus.OK, responseContent);
+        } catch (InterruptedException | ExecutionException e) {
+            Logger.logError("processGetAll caught error: ", e);
             return returnError(HttpStatus.INTERNAL_SERVER_ERROR);
         } finally {
             dbHandler.closeDbClient();
