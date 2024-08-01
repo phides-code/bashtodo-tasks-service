@@ -32,10 +32,6 @@ public class DynamoDBHandler {
         dynamoDbClient = DependencyFactory.dynamoDbClient();
     }
 
-    public void closeDbClient() {
-        dynamoDbClient.close();
-    }
-
     public List<Entity> listEntities() throws InterruptedException, ExecutionException {
         List<Entity> entities = new ArrayList<>();
 
