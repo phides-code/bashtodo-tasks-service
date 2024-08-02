@@ -72,8 +72,8 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
         if (pathSegments.length == 3) {
             String pathSegment = pathSegments[2];
 
-            if (pathSegment.equals("completed")) {
-                return processGetAllCompleted();
+            if (pathSegment.equals("completed") || pathSegment.equals("pending")) {
+                return processGetAllByStatus(pathSegment.toUpperCase());
             }
 
             return processGetById(pathSegment);
@@ -97,9 +97,9 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
         }
     }
 
-    private APIGatewayProxyResponseEvent processGetAllCompleted() {
+    private APIGatewayProxyResponseEvent processGetAllByStatus(String taskStatus) {
         try {
-            List<Entity> entities = dbHandler.listCompletedEntities();
+            List<Entity> entities = dbHandler.listEntitiesByStatus(taskStatus);
 
             ResponseStructure responseContent = new ResponseStructure(entities, null);
 
@@ -112,7 +112,7 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
 
     private APIGatewayProxyResponseEvent processGetAll() {
         try {
-            List<Entity> entities = dbHandler.listEntities();
+            List<Entity> entities = dbHandler.listAllEntities();
 
             ResponseStructure responseContent = new ResponseStructure(entities, null);
 

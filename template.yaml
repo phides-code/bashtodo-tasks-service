@@ -44,6 +44,12 @@ Resources:
             Path: /tasks
             Method: GET
             RestApiId: !Ref BashtodoTasksService
+        GetPendingTasks:
+          Type: Api
+          Properties:
+            Path: /tasks/pending
+            Method: GET
+            RestApiId: !Ref BashtodoTasksService
         GetCompletedTasks:
           Type: Api
           Properties:

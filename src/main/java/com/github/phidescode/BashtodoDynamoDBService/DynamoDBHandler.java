@@ -32,7 +32,7 @@ public class DynamoDBHandler {
         dynamoDbClient = DependencyFactory.dynamoDbClient();
     }
 
-    public List<Entity> listEntities() throws InterruptedException, ExecutionException {
+    public List<Entity> listAllEntities() throws InterruptedException, ExecutionException {
         List<Entity> entities = new ArrayList<>();
 
         ScanRequest scanRequest = ScanRequest.builder()
@@ -51,12 +51,12 @@ public class DynamoDBHandler {
         return entities;
     }
 
-    public List<Entity> listCompletedEntities() throws InterruptedException, ExecutionException {
+    public List<Entity> listEntitiesByStatus(String taskStatus) throws InterruptedException, ExecutionException {
         List<Entity> entities = new ArrayList<>();
 
         String filterExpression = "taskStatus = :taskStatus";
         Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
-        expressionAttributeValues.put(":taskStatus", AttributeValue.builder().s("COMPLETED").build());
+        expressionAttributeValues.put(":taskStatus", AttributeValue.builder().s(taskStatus).build());
 
         ScanRequest scanRequest = ScanRequest.builder()
                 .tableName(TABLE_NAME)
