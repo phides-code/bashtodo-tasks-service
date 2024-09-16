@@ -48,6 +48,10 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
 
         final String secret = cache.getSecretString("BASHTODO_API_KEY");
 
+        Logger.log("*** requestHeaders: " + requestHeaders);
+        Logger.log("*** customHeader: " + customHeader);
+        Logger.log("*** secret: " + secret);
+
         if (customHeader == null || !secret.equals(customHeader)) {
             Logger.log("Could not authenticate header");
             return returnError(HttpStatus.BAD_REQUEST);
