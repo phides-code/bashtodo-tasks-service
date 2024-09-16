@@ -44,19 +44,17 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
 
         // Extract custom header from the request
         Map<String, String> requestHeaders = request.getHeaders();
-        String customHeader = requestHeaders.get("x-api-key");
 
-        if (customHeader == null) {
-            customHeader = requestHeaders.get("X-Api-Key");
+        String apiKey = requestHeaders.get("x-api-key");
+
+        // x-api-key shows up in Camel-Case when run in SAM for some reason
+        if (apiKey == null) {
+            apiKey = requestHeaders.get("X-Api-Key");
         }
 
         final String secret = cache.getSecretString("BASHTODO_API_KEY");
 
-        Logger.log("*** requestHeaders: " + requestHeaders);
-        Logger.log("*** customHeader: " + customHeader);
-        Logger.log("*** secret: " + secret);
-
-        if (customHeader == null || !secret.equals(customHeader)) {
+        if (apiKey == null || !secret.equals(apiKey)) {
             Logger.log("Could not authenticate header");
             return returnError(HttpStatus.BAD_REQUEST);
         }
