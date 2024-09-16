@@ -44,7 +44,11 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
 
         // Extract custom header from the request
         Map<String, String> requestHeaders = request.getHeaders();
-        String customHeader = requestHeaders.get("X-Api-Key");
+        String customHeader = requestHeaders.get("x-api-key");
+
+        if (customHeader == null) {
+            customHeader = requestHeaders.get("X-Api-Key");
+        }
 
         final String secret = cache.getSecretString("BASHTODO_API_KEY");
 
