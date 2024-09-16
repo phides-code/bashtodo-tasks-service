@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.springframework.http.HttpStatus;
 
+import com.amazonaws.secretsmanager.caching.SecretCache;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
@@ -29,6 +30,8 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
     private static final String ORIGIN_URL = "http://localhost:3000";
     private static final DynamoDBHandler dbHandler = new DynamoDBHandler();
 
+    private final SecretCache cache = new SecretCache();
+
     public App() {
         headers = new HashMap<>();
         headers.put("Access-Control-Allow-Origin", ORIGIN_URL);
@@ -38,6 +41,17 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent request, Context context) {
         Logger.setLogger(context.getLogger());
+
+        // Extract custom header from the request
+        Map<String, String> requestHeaders = request.getHeaders();
+        String customHeader = requestHeaders.get("X-Api-Key");
+
+        final String secret = cache.getSecretString("BASHTODO_API_KEY");
+
+        if (customHeader == null || !secret.equals(customHeader)) {
+            Logger.log("Could not authenticate header");
+            return returnError(HttpStatus.BAD_REQUEST);
+        }
 
         String httpMethod = request.getHttpMethod();
         Logger.log("Processing " + httpMethod + " request");
